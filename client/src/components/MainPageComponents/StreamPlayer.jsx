@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { staggerContainer } from "../../utils/motion";
 import ReactHlsPlayer from "react-hls-player";
@@ -18,7 +18,9 @@ const LiveVideo = ({ src }) => {
           ⚠️Object moving detected
         </div>
       ) : (
-        <div className="p-3 h-auto rounded-3xl bg-green-400 w-1/2 text-center"></div>
+        <div className="p-3 h-auto rounded-3xl bg-green-400 w-1/2 text-center">
+          Detecting...
+        </div>
       )}
     </div>
   );
@@ -40,6 +42,7 @@ const VideoLink = ({ paragraph, setParagraph }) => {
     </div>
   );
 };
+
 const CameraLink = ({ paragraph, num }) => {
   return (
     <a href={paragraph} className="rounded-3xl bg-slate-800 p-3 select-none">
@@ -49,12 +52,31 @@ const CameraLink = ({ paragraph, num }) => {
 };
 const backendUrl = import.meta.env.VITE_REACT_BACKEND_URL || ""; //from .env file
 
+const VideoDropZone = () => {
+  const [content, setContent] = useState("");
+  return content ? (
+    <LiveVideo src={content} />
+  ) : (
+    <textarea
+      id="videodropzone"
+      name="videodropzone"
+      value={content}
+      className="text-white text-md bg-slate-800 rounded-lg p-2 m-4 resize-none"
+      onDrop={(e) => {
+        e.preventDefault();
+        setContent(e.dataTransfer.getData("text/plain"));
+      }}
+    ></textarea>
+  );
+};
+
 const StreamPlayer = () => {
   const [paragraph, setParagraph] = useState("");
   const [paragraph2, setParagraph2] = useState("");
   const [paragraph3, setParagraph3] = useState("");
   const [paragraph4, setParagraph4] = useState("");
   const [linkCount, setLinkCount] = useState(1);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     // console.log("here");
@@ -137,16 +159,7 @@ const StreamPlayer = () => {
           </div>
 
           <div className="grid grid-cols-2 bg-slate-700 rounded-lg p-4">
-            <LiveVideo
-              src={
-                "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
-              }
-            />
-            <LiveVideo
-              src={
-                "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
-              }
-            />
+            <VideoDropZone />
             <LiveVideo
               src={
                 "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
