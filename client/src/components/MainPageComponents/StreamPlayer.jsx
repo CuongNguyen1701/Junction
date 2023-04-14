@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { styles } from "../../styles";
 import { staggerContainer } from "../../utils/motion";
-import { slideIn } from "../../utils/motion";
 import ReactHlsPlayer from "react-hls-player";
 const LiveVideo = ({ src }) => {
+  let alert = true;
   return (
-    <div className="p-3 h-auto">
+    <div className="flex flex-col items-center gap-3 p-3 h-auto">
       <ReactHlsPlayer
         src={src}
         autoPlay={true}
@@ -14,6 +13,13 @@ const LiveVideo = ({ src }) => {
         width="100%"
         height="auto"
       />
+      {alert ? (
+        <div className="p-3 h-auto rounded-3xl bg-red-600 w-2/3 animate-pulse text-center text-yellow-200 font-mono text-xl">
+          ⚠️Object moving detected
+        </div>
+      ) : (
+        <div className="p-3 h-auto rounded-3xl bg-green-400 w-1/2 text-center"></div>
+      )}
     </div>
   );
 };
@@ -23,7 +29,7 @@ const VideoLink = ({ paragraph, setParagraph }) => {
     setParagraph(event.target.value);
   };
   return (
-    <div className="text-white text-2xl bg-slate-800 rounded-lg p-2 m-4">
+    <div className="text-white text-md bg-slate-800 rounded-lg p-2 m-4">
       <textarea
         id="paragraph"
         name="paragraph"
@@ -34,25 +40,15 @@ const VideoLink = ({ paragraph, setParagraph }) => {
     </div>
   );
 };
-
-const backendUrl = import.meta.env.VITE_REACT_BACKEND_URL || ""; //from .env file
-
-const LinkSubmitButton = ({ handleSubmit }) => {
+const CameraLink = ({ paragraph, num }) => {
   return (
-    <button
-      className="flex flex-row w-fit h-auto green-pink-gradient p-[1px]
-            rounded-[10px] shadow-card select-none self-end"
-    >
-      <div
-        className="bg-tertiary hover:bg-slate-600 rounded-[10px] py-5 px-12  
-              flex justify-evenly items-center flex-col"
-        onClick={handleSubmit}
-      >
-        SUBMIT
-      </div>
-    </button>
+    <a href={paragraph} className="rounded-3xl bg-slate-800 p-3 select-none">
+      Camera {num}
+    </a>
   );
 };
+const backendUrl = import.meta.env.VITE_REACT_BACKEND_URL || ""; //from .env file
+
 const StreamPlayer = () => {
   const [paragraph, setParagraph] = useState("");
   const [paragraph2, setParagraph2] = useState("");
@@ -104,21 +100,53 @@ const StreamPlayer = () => {
             {linkCount > 3 && (
               <VideoLink paragraph={paragraph4} setParagraph={setParagraph4} />
             )}
-            <button
-              className=" bg-slate-800 rounded-full items-center h-16 w-16 hover:bg-slate-600 hover:border-white hover:border-2"
-              onClick={() => {
-                setLinkCount((count) => {
-                  if (count >= 4) return 4;
-                  return count + 1;
-                });
-              }}
-            >
-              +
-            </button>
-            <LinkSubmitButton handleSubmit={handleSubmit} />
+            <div className="flex flex-row self-start gap-5 p-5">
+              {linkCount < 4 && (
+                <button
+                  className="select-none bg-slate-800 rounded-full items-center h-16 w-16 hover:bg-slate-600 hover:border-white hover:border-2"
+                  onClick={() => {
+                    setLinkCount((count) => {
+                      if (count >= 4) return 4;
+                      return count + 1;
+                    });
+                  }}
+                >
+                  +
+                </button>
+              )}
+              {linkCount > 1 && (
+                <button
+                  className="select-none bg-slate-800 rounded-full items-center h-16 w-16 hover:bg-slate-600 hover:border-white hover:border-2"
+                  onClick={() => {
+                    setLinkCount((count) => {
+                      if (count <= 1) return 1;
+                      return count - 1;
+                    });
+                  }}
+                >
+                  -
+                </button>
+              )}
+            </div>
+            <div className="flex flex-row self-start gap-5 p-5">
+              <CameraLink paragraph={paragraph} num={1} />
+              {linkCount > 1 && <CameraLink paragraph={paragraph2} num={2} />}
+              {linkCount > 2 && <CameraLink paragraph={paragraph3} num={3} />}
+              {linkCount > 3 && <CameraLink paragraph={paragraph} num={4} />}
+            </div>
           </div>
 
           <div className="grid grid-cols-2 bg-slate-700 rounded-lg p-4">
+            <LiveVideo
+              src={
+                "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
+              }
+            />
+            <LiveVideo
+              src={
+                "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
+              }
+            />
             <LiveVideo
               src={
                 "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
