@@ -1,6 +1,7 @@
 import {
   cuong,
   hnam,
+  pnam,
   anon,
 } from "../assets";
 
@@ -19,7 +20,7 @@ const members = [
   },
   {
     name: "Le Phuong Nam",
-    image: anon,
+    image: pnam,
     role: "Back-end Developer",
     description: "Description",
   },
