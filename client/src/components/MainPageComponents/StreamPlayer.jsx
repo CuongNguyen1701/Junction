@@ -57,12 +57,11 @@ const StreamPlayer = () => {
           </div>
 
           <div className="grid grid-cols-2 bg-slate-700 rounded-lg p-4">
-            <LiveVideo src={"/videos/192_168_5_102.mp4"} />
-            {/* <LiveVideo
+            <LiveVideo
               src={
                 "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
               }
-            /> */}
+            />
           </div>
         </div>
         <div
