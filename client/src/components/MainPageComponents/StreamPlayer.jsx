@@ -4,6 +4,7 @@ import { staggerContainer } from "../../utils/motion";
 import ReactHlsPlayer from "react-hls-player";
 const LiveVideo = ({ src }) => {
   let alert = true;
+  //TODO: alert should be the AI response
   return (
     <div className="flex flex-col items-center gap-3 p-3 h-auto">
       <ReactHlsPlayer
@@ -14,11 +15,11 @@ const LiveVideo = ({ src }) => {
         height="auto"
       />
       {alert ? (
-        <div className="p-3 h-auto rounded-3xl bg-red-600 w-2/3 animate-pulse text-center text-yellow-200 font-mono text-xl">
+        <div className="select-none p-3 h-auto rounded-3xl bg-red-600 w-2/3 animate-pulse text-center text-yellow-200 font-mono text-xl">
           ⚠️Object moving detected
         </div>
       ) : (
-        <div className="p-3 h-auto rounded-3xl bg-green-400 w-1/2 text-center">
+        <div className="select-none p-3 h-auto rounded-3xl bg-green-400 w-1/2 text-center">
           Detecting...
         </div>
       )}
@@ -54,14 +55,28 @@ const backendUrl = import.meta.env.VITE_REACT_BACKEND_URL || ""; //from .env fil
 
 const VideoDropZone = () => {
   const [content, setContent] = useState("");
-  return content ? (
-    <LiveVideo src={content} />
-  ) : (
+  //TODO: add a loading state and error state
+  if (content)
+    return (
+      <div className="flex flex-col items-center">
+        <button
+          className="bg-red-600 rounded-full items-center h-10 w-10"
+          onClick={(e) => {
+            setContent("");
+          }}
+        >
+          x
+        </button>
+        <LiveVideo src={content} />
+      </div>
+    );
+
+  return (
     <textarea
       id="videodropzone"
       name="videodropzone"
       value={content}
-      className="text-white text-md bg-slate-800 rounded-lg p-2 m-4 resize-none"
+      className="text-white text-md bg-slate-800 rounded-lg p-2 m-4 resize-none "
       onDrop={(e) => {
         e.preventDefault();
         setContent(e.dataTransfer.getData("text/plain"));
@@ -123,22 +138,10 @@ const StreamPlayer = () => {
               <VideoLink paragraph={paragraph4} setParagraph={setParagraph4} />
             )}
             <div className="flex flex-row self-start gap-5 p-5">
-              {linkCount < 4 && (
-                <button
-                  className="select-none bg-slate-800 rounded-full items-center h-16 w-16 hover:bg-slate-600 hover:border-white hover:border-2"
-                  onClick={() => {
-                    setLinkCount((count) => {
-                      if (count >= 4) return 4;
-                      return count + 1;
-                    });
-                  }}
-                >
-                  +
-                </button>
-              )}
               {linkCount > 1 && (
                 <button
-                  className="select-none bg-slate-800 rounded-full items-center h-16 w-16 hover:bg-slate-600 hover:border-white hover:border-2"
+                  className="select-none bg-slate-800 rounded-full items-center h-16 w-16 
+                              border-black hover:bg-slate-600 hover:border-white border-2"
                   onClick={() => {
                     setLinkCount((count) => {
                       if (count <= 1) return 1;
@@ -147,6 +150,20 @@ const StreamPlayer = () => {
                   }}
                 >
                   -
+                </button>
+              )}
+              {linkCount < 4 && (
+                <button
+                  className="select-none bg-slate-800 rounded-full items-center h-16 w-16 
+                            border-black hover:bg-slate-600 hover:border-white border-2"
+                  onClick={() => {
+                    setLinkCount((count) => {
+                      if (count >= 4) return 4;
+                      return count + 1;
+                    });
+                  }}
+                >
+                  +
                 </button>
               )}
             </div>
@@ -160,11 +177,9 @@ const StreamPlayer = () => {
 
           <div className="grid grid-cols-2 bg-slate-700 rounded-lg p-4">
             <VideoDropZone />
-            <LiveVideo
-              src={
-                "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
-              }
-            />
+            <VideoDropZone />
+            <VideoDropZone />
+            <VideoDropZone />
           </div>
         </div>
         <div
