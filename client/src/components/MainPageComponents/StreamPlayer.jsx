@@ -60,7 +60,7 @@ const VideoDropZone = ({ cameraName }) => {
     event.preventDefault();
     setContent(event.dataTransfer.getData("text/plain"));
     const formData = new FormData();
-    formData.append("link", content); //key
+    formData.append(`${cameraName}`, content); //key
 
     for (const entry of formData) {
       console.log(entry); //Show all entries in formData
@@ -124,7 +124,8 @@ const StreamPlayer = () => {
         </span>
         <div className="flex flex-col bg-black-100 p-8 rounded-2xl gap-5 ">
           <div className="flex flex-col  bg-slate-700 rounded-lg p-4 m-8 h-min">
-            Enter a link to the list of video
+            Enter a link to the video, click on (+) or (-) button to add or
+            remove a camera link
             <VideoLinkInputField
               paragraph={paragraph}
               setParagraph={setParagraph}
@@ -177,6 +178,7 @@ const StreamPlayer = () => {
                 </button>
               )}
             </div>
+            Drag the camera you want to use to the boxes below
             <div className="flex flex-row self-start gap-5 p-5">
               <CameraLink paragraph={paragraph} num={1} />
               {linkCount > 1 && paragraph2 && (
@@ -190,12 +192,12 @@ const StreamPlayer = () => {
               )}
             </div>
           </div>
-
+          Drag here:
           <div className="grid grid-cols-2 bg-slate-700 rounded-lg p-4">
-            <VideoDropZone />
-            <VideoDropZone />
-            <VideoDropZone />
-            <VideoDropZone />
+            <VideoDropZone cameraName={"Camera_1"} />
+            <VideoDropZone cameraName={"Camera_2"} />
+            <VideoDropZone cameraName={"Camera_3"} />
+            <VideoDropZone cameraName={"Camera_4"} />
           </div>
         </div>
         <div
