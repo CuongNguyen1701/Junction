@@ -19,13 +19,18 @@ import threejs from "./tech/threejs.svg";
 
 import cuong from "./members/cuong.png";
 import hnam from "./members/hnam.png";
+import pnam from "./members/pnam.png";
 import anon from "./members/anon.png";
+import thanh from "./members/thanh.png";
+
 export {
   anon,
   hnam,
+  pnam,
   cuong,
   logo,
   menu,
   close,
   css,
+  thanh,
 };
