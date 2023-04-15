@@ -1,4 +1,4 @@
-import { cuong, hnam, pnam, anon, thanh } from "../assets";
+import { cuong, hnam, pnam, anon, thanh, hadinh } from "../assets";
 
 const members = [
   {
@@ -27,7 +27,7 @@ const members = [
   },
   {
     name: "Dinh Viet Ha",
-    image: anon,
+    image: hadinh,
     role: "AI Engineer",
     description: "Description",
   },
