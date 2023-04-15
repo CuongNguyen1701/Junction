@@ -97,7 +97,7 @@ const VideoDropZone = ({ cameraName }) => {
       id="videodropzone"
       name="videodropzone"
       value={content}
-      className="text-white text-md bg-slate-800 rounded-lg p-2 m-4 resize-none "
+      className="text-transparent cursor-default text-md bg-slate-800 rounded-lg p-5 py-16 m-4 resize-none "
       onDrop={handleSubmit}
     ></textarea>
   );
