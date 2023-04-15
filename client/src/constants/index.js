@@ -2,15 +2,15 @@ import { cuong, hnam, pnam, anon, thanh, hadinh } from "../assets";
 
 const members = [
   {
-    name: "Nguyen Truc Cuong",
-    image: cuong,
-    role: "Front-end Developer",
-    description: "Description",
-  },
-  {
     name: "Tran Duc Hoang Nam",
     image: hnam,
     role: "Back-end Developer",
+    description: "Description",
+  },
+  {
+    name: "Junction X Hanoi 2023",
+    image: anon,
+    role: "Organizer",
     description: "Description",
   },
   {
@@ -22,7 +22,13 @@ const members = [
   {
     name: "Do Chi Thanh",
     image: thanh,
-    role: "Business Advisor",
+    role: "Business Analyst",
+    description: "Description",
+  },
+  {
+    name: "Nguyen Truc Cuong",
+    image: cuong,
+    role: "Front-end Developer",
     description: "Description",
   },
   {
