@@ -3,6 +3,7 @@ import {
   hnam,
   pnam,
   anon,
+  thanh
 } from "../assets";
 
 const members = [
@@ -26,7 +27,7 @@ const members = [
   },
   {
     name: "Do Chi Thanh",
-    image: anon,
+    image: thanh,
     role: "Business Advisor",
     description: "Description",
   },
