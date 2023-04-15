@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { staggerContainer } from "../../utils/motion";
 import ReactHlsPlayer from "react-hls-player";
@@ -31,21 +31,32 @@ const VideoLinkInputField = ({ paragraph, setParagraph }) => {
     setParagraph(event.target.value);
   };
   return (
-    <div className="text-white text-md bg-slate-800 rounded-lg p-2 m-4">
+    <div className="flex flex-row items-center gap-2 text-white text-md bg-slate-800 rounded-lg p-2 m-4">
       <textarea
         id="paragraph"
         name="paragraph"
         className=" block h-min w-full p-2 border-gray-300 rounded-md shadow-sm resize-none"
+        placeholder="Paste your video/stream link here"
         value={paragraph}
         onChange={handleTextChange}
       />
+      <button
+        className="bg-slate-100 rounded-full items-center self-end h-auto w-fit text-black p-2 hover:bg-slate-300"
+        onClick={async () => {
+          const text = await navigator.clipboard.readText();
+          setParagraph(text);
+        }}
+      >
+        Paste
+      </button>
     </div>
   );
 };
 
 const CameraLink = ({ paragraph, num }) => {
   return (
-    <a href={paragraph} className="rounded-3xl bg-slate-800 p-3 select-none">
+    <a href={paragraph} className="rounded-3xl bg-slate-800 p-3 select-none hover:bg-slate-60 
+                              border-black hover:border-white border-2">
       Camera {num}
     </a>
   );
@@ -96,7 +107,6 @@ const VideoDropZone = ({ cameraName }) => {
     <textarea
       id="videodropzone"
       name="videodropzone"
-      value={content}
       className="text-transparent cursor-default text-md bg-slate-800 rounded-lg p-5 py-16 m-4 resize-none "
       onDrop={handleSubmit}
     ></textarea>
@@ -152,7 +162,7 @@ const StreamPlayer = () => {
               {linkCount > 1 && (
                 <button
                   className="select-none bg-slate-800 rounded-full items-center h-16 w-16 
-                              border-black hover:bg-slate-600 hover:border-white border-2"
+                              border-black hover:border-white border-2"
                   onClick={() => {
                     setLinkCount((count) => {
                       if (count <= 1) return 1;
@@ -166,7 +176,7 @@ const StreamPlayer = () => {
               {linkCount < 4 && (
                 <button
                   className="select-none bg-slate-800 rounded-full items-center h-16 w-16 
-                            border-black hover:bg-slate-600 hover:border-white border-2"
+                            border-black hover:border-white border-2"
                   onClick={() => {
                     setLinkCount((count) => {
                       if (count >= 4) return 4;
