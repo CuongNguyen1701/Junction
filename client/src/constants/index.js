@@ -1,10 +1,4 @@
-import {
-  cuong,
-  hnam,
-  pnam,
-  anon,
-  thanh
-} from "../assets";
+import { cuong, hnam, pnam, anon, thanh } from "../assets";
 
 const members = [
   {
@@ -37,12 +31,6 @@ const members = [
     role: "AI Engineer",
     description: "Description",
   },
-  {
-    name: "Name",
-    image: anon,
-    role: "Mentor",
-    description: "Description",
-  },
 ];
 
 export const navLinks = [
@@ -63,4 +51,4 @@ export const navLinks = [
   },
 ];
 
-export { members};
+export { members };

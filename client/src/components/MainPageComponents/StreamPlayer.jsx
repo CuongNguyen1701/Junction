@@ -2,17 +2,16 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { staggerContainer } from "../../utils/motion";
 import ReactHlsPlayer from "react-hls-player";
-const LiveVideo = ({ src }) => {
+const LiveVideoPlayer = ({ src }) => {
   let alert = true;
   //TODO: alert should be the AI response
   return (
-    <div className="flex flex-col items-center gap-3 p-3 h-auto">
+    <div className="flex flex-col items-center gap-3 p-3 h-auto ">
       <ReactHlsPlayer
         src={src}
         autoPlay={true}
         controls={false}
-        width="100%"
-        height="auto"
+        className="h-72 w-auto"
       />
       {alert ? (
         <div className="select-none p-3 h-auto rounded-3xl bg-red-600 w-2/3 animate-pulse text-center text-yellow-200 font-mono text-xl">
@@ -27,7 +26,7 @@ const LiveVideo = ({ src }) => {
   );
 };
 
-const VideoLink = ({ paragraph, setParagraph }) => {
+const VideoLinkInputField = ({ paragraph, setParagraph }) => {
   const handleTextChange = (event) => {
     setParagraph(event.target.value);
   };
@@ -53,34 +52,53 @@ const CameraLink = ({ paragraph, num }) => {
 };
 const backendUrl = import.meta.env.VITE_REACT_BACKEND_URL || ""; //from .env file
 
-const VideoDropZone = () => {
+const VideoDropZone = ({ cameraName }) => {
   const [content, setContent] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   //TODO: add a loading state and error state
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setContent(event.dataTransfer.getData("text/plain"));
+    const formData = new FormData();
+    formData.append("link", content); //key
+
+    for (const entry of formData) {
+      console.log(entry); //Show all entries in formData
+    }
+    // console.log(backendUrl);
+    // updateResponse(formData);
+    // try {
+    //   const response = await axios.post(`${backendUrl}`, formData);
+    //   console.log(response);
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  };
+
   if (content)
     return (
       <div className="flex flex-col items-center">
         <button
-          className="bg-red-600 rounded-full items-center h-10 w-10"
+          className="bg-red-600 rounded-full items-center self-end h-10 w-10"
           onClick={(e) => {
             setContent("");
           }}
         >
           x
         </button>
-        <LiveVideo src={content} />
+
+        <LiveVideoPlayer src={content} />
       </div>
     );
 
+  //No content
   return (
     <textarea
       id="videodropzone"
       name="videodropzone"
       value={content}
       className="text-white text-md bg-slate-800 rounded-lg p-2 m-4 resize-none "
-      onDrop={(e) => {
-        e.preventDefault();
-        setContent(e.dataTransfer.getData("text/plain"));
-      }}
+      onDrop={handleSubmit}
     ></textarea>
   );
 };
@@ -91,26 +109,6 @@ const StreamPlayer = () => {
   const [paragraph3, setParagraph3] = useState("");
   const [paragraph4, setParagraph4] = useState("");
   const [linkCount, setLinkCount] = useState(1);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    // console.log("here");
-    const formData = new FormData();
-    formData.append("link", paragraph); //key
-
-    for (const entry of formData) {
-      console.log(entry); //Show all entries in formData
-    }
-    console.log(backendUrl);
-    //   console.log(updateResponse);
-    //   updateResponse(formData);
-    //   try {
-    //     const response = await axios.post(`${backendUrl}`, formData);
-    //     console.log(response);
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-  };
 
   return (
     <div>
@@ -127,15 +125,27 @@ const StreamPlayer = () => {
         <div className="flex flex-col bg-black-100 p-8 rounded-2xl gap-5 ">
           <div className="flex flex-col  bg-slate-700 rounded-lg p-4 m-8 h-min">
             Enter a link to the list of video
-            <VideoLink paragraph={paragraph} setParagraph={setParagraph} />
+            <VideoLinkInputField
+              paragraph={paragraph}
+              setParagraph={setParagraph}
+            />
             {linkCount > 1 && (
-              <VideoLink paragraph={paragraph2} setParagraph={setParagraph2} />
+              <VideoLinkInputField
+                paragraph={paragraph2}
+                setParagraph={setParagraph2}
+              />
             )}
             {linkCount > 2 && (
-              <VideoLink paragraph={paragraph3} setParagraph={setParagraph3} />
+              <VideoLinkInputField
+                paragraph={paragraph3}
+                setParagraph={setParagraph3}
+              />
             )}
             {linkCount > 3 && (
-              <VideoLink paragraph={paragraph4} setParagraph={setParagraph4} />
+              <VideoLinkInputField
+                paragraph={paragraph4}
+                setParagraph={setParagraph4}
+              />
             )}
             <div className="flex flex-row self-start gap-5 p-5">
               {linkCount > 1 && (
@@ -169,9 +179,15 @@ const StreamPlayer = () => {
             </div>
             <div className="flex flex-row self-start gap-5 p-5">
               <CameraLink paragraph={paragraph} num={1} />
-              {linkCount > 1 && <CameraLink paragraph={paragraph2} num={2} />}
-              {linkCount > 2 && <CameraLink paragraph={paragraph3} num={3} />}
-              {linkCount > 3 && <CameraLink paragraph={paragraph} num={4} />}
+              {linkCount > 1 && paragraph2 && (
+                <CameraLink paragraph={paragraph2} num={2} />
+              )}
+              {linkCount > 2 && paragraph3 && (
+                <CameraLink paragraph={paragraph3} num={3} />
+              )}
+              {linkCount > 3 && paragraph4 && (
+                <CameraLink paragraph={paragraph4} num={4} />
+              )}
             </div>
           </div>
 
