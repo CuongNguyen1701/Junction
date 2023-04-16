@@ -16,13 +16,13 @@ const members = [
   {
     name: "Nguyen Truc Cuong",
     image: cuong,
-    role: "Front-end Developer",
+    role: "Fullstack Developer",
     description: "Description",
   },
   {
     name: "Le Phuong Nam",
     image: pnam,
-    role: "Back-end Developer",
+    role: "Data Analyst",
     description: "Description",
   },
   {
@@ -34,7 +34,7 @@ const members = [
   {
   name: "Tran Duc Hoang Nam",
   image: hnam,
-  role: "Back-end Developer",
+  role: "Fullstack Developer",
   description: "Description",
 },
 ];

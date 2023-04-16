@@ -24,6 +24,7 @@
     "react-dropzone": "^14.2.3",
     "react-hls-player": "^3.0.7",
     "react-pdf": "^6.2.2",
+    "react-player": "^2.12.0",
     "react-router-dom": "^6.8.1",
     "react-tilt": "^0.1.4",
     "react-vertical-timeline-component": "^3.6.0",

@@ -7,7 +7,6 @@ import { members } from "../../constants";
 import { SectionWrapper } from "../../hoc";
 import { fadeIn, textVariant } from "../../utils/motion";
 
-
 const MemberCard = ({ index, name, image, role, description }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
@@ -95,14 +94,15 @@ const About = () => {
         variants={fadeIn("", "", 0, 0.5)}
         className="mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]"
       >
-        Our team has a vision of
+        Our team has a vision of creating a platform that will aid people and
+        organizations in making the world a more comfortable place to live
       </motion.p>
 
       <div className="flex flex-wrap justify-around mx-20 gap-20 mt-20 items-center ">
         {members.map((member, index) => (
           <MemberCard key={member.name} index={index} {...member} />
         ))}
-      </div>      
+      </div>
     </div>
   );
 };

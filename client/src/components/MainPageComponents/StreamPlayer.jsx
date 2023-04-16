@@ -1,37 +1,47 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { staggerContainer } from "../../utils/motion";
 import ReactHlsPlayer from "react-hls-player";
+import ReactPlayer from "react-player";
+import axios from "axios";
+const backendUrl =
+  import.meta.env.VITE_REACT_BACKEND_URL ||
+  "https://20c7-2401-d800-7060-d0e7-2555-e07a-c83b-2f59.ngrok.io"; //from .env file
 const LiveVideoPlayer = ({ src }) => {
   let alert = true;
   //TODO: alert should be the AI response
+  let isMP4 = src.endsWith(".mp4");
+  let isM3U8 = src.endsWith(".m3u8");
+  let isDefault = !(isMP4 || isM3U8);
   return (
     <div className="flex flex-col items-center gap-3 p-3 h-auto ">
-      <ReactHlsPlayer
-        src={src}
-        autoPlay={true}
-        controls={false}
-        className="h-72 w-auto"
-      />
-      {alert ? (
-        <div className="select-none p-3 h-auto rounded-3xl bg-red-600 w-2/3 animate-pulse text-center text-yellow-200 font-mono text-xl">
-          ⚠️Object moving detected
-        </div>
-      ) : (
-        <div className="select-none p-3 h-auto rounded-3xl bg-green-400 w-1/2 text-center">
-          Detecting...
-        </div>
+      {isDefault && <img source={src} />}
+      {isMP4 && (
+        <video autoPlay={true}>
+          <source src={src} type="video/mp4" />
+        </video>
+      )}
+      {isM3U8 && (
+        <ReactHlsPlayer
+          src={src}
+          autoPlay={true}
+          controls={false}
+          className="h-72 w-auto"
+        />
       )}
     </div>
   );
 };
 
-const VideoLinkInputField = ({ paragraph, setParagraph }) => {
+const VideoLinkInputField = ({ paragraph, setParagraph, id }) => {
   const handleTextChange = (event) => {
     setParagraph(event.target.value);
   };
   return (
     <div className="flex flex-row items-center gap-2 text-white text-md bg-slate-800 rounded-lg p-2 m-4">
+      <div className="flex flex-col p-2 rounded-full bg-slate-800 text-center">
+        Camera {id}
+      </div>
       <textarea
         id="paragraph"
         name="paragraph"
@@ -41,7 +51,7 @@ const VideoLinkInputField = ({ paragraph, setParagraph }) => {
         onChange={handleTextChange}
       />
       <button
-        className="bg-slate-100 rounded-full items-center self-end h-auto w-fit text-black p-2 hover:bg-slate-300"
+        className="bg-slate-100 rounded-full items-center h-auto w-fit text-black p-2 hover:bg-slate-300"
         onClick={async () => {
           const text = await navigator.clipboard.readText();
           setParagraph(text);
@@ -55,27 +65,22 @@ const VideoLinkInputField = ({ paragraph, setParagraph }) => {
 
 const CameraLink = ({ paragraph, num }) => {
   return (
-    <a href={paragraph} className="rounded-3xl bg-slate-800 p-3 select-none hover:bg-slate-60 
-                              border-black hover:border-white border-2">
+    <a
+      href={paragraph}
+      className="rounded-3xl bg-slate-800 p-3 select-none hover:bg-slate-60 
+                              border-black hover:border-white border-2"
+    >
       Camera {num}
     </a>
   );
 };
-const backendUrl = import.meta.env.VITE_REACT_BACKEND_URL || ""; //from .env file
 
-const VideoDropZone = ({ cameraName }) => {
-  const [content, setContent] = useState("");
+const VideoDropZone = ({ cameraName, id, videoInput, setVideoInput }) => {
   const [isLoading, setIsLoading] = useState(false);
   //TODO: add a loading state and error state
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setContent(event.dataTransfer.getData("text/plain"));
-    const formData = new FormData();
-    formData.append(`${cameraName}`, content); //key
-
-    for (const entry of formData) {
-      console.log(entry); //Show all entries in formData
-    }
+    setVideoInput(event.dataTransfer.getData("text/plain"));
     // console.log(backendUrl);
     // updateResponse(formData);
     // try {
@@ -86,19 +91,19 @@ const VideoDropZone = ({ cameraName }) => {
     // }
   };
 
-  if (content)
+  if (videoInput)
     return (
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center bg-slate-800 rounded-lg p-5">
         <button
           className="bg-red-600 rounded-full items-center self-end h-10 w-10"
           onClick={(e) => {
-            setContent("");
+            setVideoInput("");
           }}
         >
           x
         </button>
 
-        <LiveVideoPlayer src={content} />
+        <LiveVideoPlayer src={videoInput} />
       </div>
     );
 
@@ -119,7 +124,73 @@ const StreamPlayer = () => {
   const [paragraph3, setParagraph3] = useState("");
   const [paragraph4, setParagraph4] = useState("");
   const [linkCount, setLinkCount] = useState(1);
-
+  const [videoInput1, setVideoInput1] = useState("");
+  const [videoInput2, setVideoInput2] = useState("");
+  const [videoInput3, setVideoInput3] = useState("");
+  const [videoInput4, setVideoInput4] = useState("");
+  const [imageList1, setImageList1] = useState([]);
+  const [imageList2, setImageList2] = useState([]);
+  const [imageList3, setImageList3] = useState([]);
+  const [imageList4, setImageList4] = useState([]);
+  let a = 0;
+  let b = 0;
+  let c = 0;
+  let d = 0;
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (imageList1.length > 0 && a < imageList1.length) {
+        setVideoInput1(imageList1[a]);
+        a++;
+      }
+      if (imageList2.length > 0 && b < imageList2.length) {
+        setVideoInput2(imageList2[b]);
+        b++;
+      }
+      if (imageList3.length > 0 && c < imageList3.length) {
+        setVideoInput3(imageList3[c]);
+        c++;
+      }
+      if (imageList4.length > 0 && d < imageList4.length) {
+        setVideoInput2(imageList4[d]);
+        d++;
+      }
+    }, 200);
+    return () => clearInterval(intervalId);
+  }, []);
+  const handleAPI = async (e) => {
+    e.preventDefault();
+    if (!(videoInput1 || videoInput2 || videoInput3 || videoInput4)) return;
+    const videoInputList = [videoInput1, videoInput2, videoInput3, videoInput4];
+    try {
+      const response = await axios.post(`${backendUrl}/predict`, {
+        vid: videoInputList,
+      });
+      console.log(response);
+      console.log(response.data);
+      json.parse(response.data).forEach((i, blobList) => {
+        for (blob in blobList) {
+          let file = new File([myBlob], "image.jpeg", {
+            type: blob.type,
+          });
+          let url = URL.createObjectURL(file);
+          if (i == 0) {
+            setImageList1((imageList1) => [...imageList1, url]);
+          }
+          if (i == 1) {
+            setImageList2((imageList2) => [...imageList2, url]);
+          }
+          if (i == 2) {
+            setImageList3((imageList3) => [...imageList3, url]);
+          }
+          if (i == 3) {
+            setImageList4((imageList4) => [...imageList4, url]);
+          }
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div>
       <motion.section
@@ -134,28 +205,32 @@ const StreamPlayer = () => {
         </span>
         <div className="flex flex-col bg-black-100 p-8 rounded-2xl gap-5 ">
           <div className="flex flex-col  bg-slate-700 rounded-lg p-4 m-8 h-min">
-            Enter a link to the video, click on (+) or (-) button to add or
+            Paste a link to the video, click on (+) or (-) button to add or
             remove a camera link
             <VideoLinkInputField
               paragraph={paragraph}
               setParagraph={setParagraph}
+              id={1}
             />
             {linkCount > 1 && (
               <VideoLinkInputField
                 paragraph={paragraph2}
                 setParagraph={setParagraph2}
+                id={2}
               />
             )}
             {linkCount > 2 && (
               <VideoLinkInputField
                 paragraph={paragraph3}
                 setParagraph={setParagraph3}
+                id={3}
               />
             )}
             {linkCount > 3 && (
               <VideoLinkInputField
                 paragraph={paragraph4}
                 setParagraph={setParagraph4}
+                id={4}
               />
             )}
             <div className="flex flex-row self-start gap-5 p-5">
@@ -203,11 +278,43 @@ const StreamPlayer = () => {
             </div>
           </div>
           Drag here:
-          <div className="grid grid-cols-2 bg-slate-700 rounded-lg p-4">
-            <VideoDropZone cameraName={"Camera_1"} />
-            <VideoDropZone cameraName={"Camera_2"} />
-            <VideoDropZone cameraName={"Camera_3"} />
-            <VideoDropZone cameraName={"Camera_4"} />
+          <div className="grid grid-cols-2 gap-2 bg-slate-700 rounded-lg p-4">
+            <VideoDropZone
+              cameraName={"Camera_1"}
+              id={1}
+              videoInput={videoInput1}
+              setVideoInput={setVideoInput1}
+            />
+            <VideoDropZone
+              cameraName={"Camera_2"}
+              id={2}
+              videoInput={videoInput2}
+              setVideoInput={setVideoInput2}
+            />
+            <VideoDropZone
+              cameraName={"Camera_3"}
+              id={3}
+              videoInput={videoInput3}
+              setVideoInput={setVideoInput3}
+            />
+            <VideoDropZone
+              cameraName={"Camera_4"}
+              id={4}
+              videoInput={videoInput4}
+              setVideoInput={setVideoInput4}
+            />
+            <button
+              className="flex flex-row w-fit h-auto green-pink-gradient p-[1px]
+            rounded-[10px] shadow-card select-none self-end"
+            >
+              <div
+                className="bg-tertiary hover:bg-slate-600 rounded-[10px] py-5 px-12  
+              flex justify-evenly items-center flex-col"
+                onClick={handleAPI}
+              >
+                SUBMIT
+              </div>
+            </button>
           </div>
         </div>
         <div
